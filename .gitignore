@@ -1,0 +1,6 @@
+.idea
+.vscode
+vendor
+.env
+xdebug.log
+auth.json
