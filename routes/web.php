@@ -11,7 +11,7 @@
 */
 
 // Healthcheck for any monitoring software
-$router->get('/healthz', 'DefaultController@healthz');
+$router->get('/', 'DefaultController@healthz');
 
 $router->group(['middleware' => ['cors']], function() use ($router) {
     // Set the CORS options that we will allow web requests from (This doesn't affect composer/console clients)
@@ -23,6 +23,6 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
     });
 
     $router->group(['middleware' => 'auth:token'], function() use ($router) {
-        
+
     });
 });
