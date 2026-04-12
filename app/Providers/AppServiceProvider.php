@@ -6,20 +6,14 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
     public function register()
     {
+        $this->app->bind('user-token', function() {
+            $user = request()->user();
+            return $user ? $user->token : null;
+        });
     }
 
-    /**
-     * Boot the authentication services for the application.
-     *
-     * @return void
-     */
     public function boot()
     {
     }
