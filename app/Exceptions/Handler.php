@@ -2,14 +2,13 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use Throwable;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
-use Plista\StatsdClient\StatsdClient;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
@@ -34,7 +33,7 @@ class Handler extends ExceptionHandler
      * @param  \Exception $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         parent::report($exception);
     }
@@ -46,7 +45,7 @@ class Handler extends ExceptionHandler
      * @param  \Exception $exception
      * @return \Illuminate\Http\JsonResponse
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         $response = [
             'code' => 500,

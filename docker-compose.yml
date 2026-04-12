@@ -1,33 +1,34 @@
-version: "3.4"
-
 networks:
   npm_service:
   repo_rangler_proxy:
-    external:
-      name: repo_rangler_proxy
+    name: repo_rangler_proxy
+    external: true
 
 services:
   npm_service_nginx:
     container_name: reporangler_npm_service_nginx
-    image: reporangler/npm_service_nginx
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
     networks:
       - repo_rangler_proxy
       - npm_service
+    volumes:
+      - ./public:/www/public:ro
     environment:
-      - VIRTUAL_HOST=npm.reporangler.develop
+      - VIRTUAL_HOST=npm.reporangler.localhost
+    depends_on:
+      - npm_service_phpfpm
 
   npm_service_phpfpm:
     container_name: reporangler_npm_service_phpfpm
-    image: reporangler/npm_service_phpfpm
     build:
       context: .
       dockerfile: docker/phpfpm/Dockerfile
-    volumes:
-      - $PWD:/www
     networks:
       - npm_service
+    volumes:
+      - .:/www
+      - ../lib-reporangler:/lib-reporangler:ro
     env_file:
-      - $PWD/.env
+      - .env

@@ -4,7 +4,7 @@ This docker service will mimic a NPM repository, but a lot more powerful and fle
 
 # Installation
 
-You should be able to resolve `npm.reporangler.develop` locally on your computer. 
+You should be able to resolve `npm.reporangler.localhost` locally on your computer. 
 Maybe you need to edit `/etc/hosts` file or add to dns?
 
 At first I had instructions which let people decide whether you want to run the manual way or the preconfigured way. 
@@ -49,13 +49,13 @@ docker ps
 
 #### 4. Query the container to see what it replies
 ```
-curl -vvv http://npm.reporangler.develop:${port}/healthz
+curl -vvv http://npm.reporangler.localhost:${port}/healthz
 ```
 
 It should output
 ```
 > GET /healthz HTTP/1.1
-> Host: npm.reporangler.develop
+> Host: npm.reporangler.localhost
 > User-Agent: curl/7.54.0
 > Accept: */*
 > 
@@ -67,13 +67,13 @@ It should output
 < X-Powered-By: PHP/7.3.4
 < Cache-Control: no-cache, private
 < Date: Sat, 31 Aug 2019 17:32:06 GMT
-< Access-Control-Allow-Origin: *.reporangler.develop
+< Access-Control-Allow-Origin: *.reporangler.localhost
 < Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS
 < Access-Control-Allow-Credentials: true
 < Access-Control-Allow-Headers: *
 < 
-* Connection #0 to host npm.reporangler.develop left intact
-{"statusCode":200,"service":"http:\/\/npm.reporangler.develop"} 
+* Connection #0 to host npm.reporangler.localhost left intact
+{"statusCode":200,"service":"http:\/\/npm.reporangler.localhost"} 
 ```
 
 # Usage
