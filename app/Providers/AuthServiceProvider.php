@@ -29,19 +29,19 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         Auth::viaRequest('repo', function (Request $request) {
-//            $authClient = app(AuthClient::class);
-//
-//            $auth_type = $request->headers->get('php-auth-type', 'http-basic');
-//            $auth_user = $request->headers->get('php-auth-user');
-//            $auth_password = $request->headers->get('php-auth-pw');
-//
-//            if(in_array(null, [$auth_user, $auth_password])){
-//                return new PublicUser($repository_type);
-//            }
-//
-//            $response = $authClient->login($auth_type, $auth_user, $auth_password);
-//
-//            return new RepositoryUser($response);
+            $authClient = app(AuthClient::class);
+            $authHeader = $request->header('Authorization');
+
+            if (empty($authHeader)) {
+                return new PublicUser();
+            }
+
+            try {
+                $response = $authClient->check($authHeader);
+                return new \RepoRangler\Entity\User($response);
+            } catch (\Exception $e) {
+                return new PublicUser();
+            }
         });
     }
 }

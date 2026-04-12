@@ -1,7 +1,9 @@
 <?php
 
-use Laravel\Lumen\Testing\DatabaseMigrations;
-use Laravel\Lumen\Testing\DatabaseTransactions;
+namespace Tests;
+
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ExampleTest extends TestCase
 {
@@ -12,8 +14,8 @@ class ExampleTest extends TestCase
      */
     public function testExample()
     {
-        $this->get('/healthz');
+        $response = $this->get('/');
 
-        $this->assertEquals(200 , $this->response->getStatusCode());
+        $response->assertStatus(200);
     }
 }

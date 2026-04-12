@@ -1,28 +1,19 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
-|
-*/
 
-// Healthcheck for any monitoring software
-$router->get('/', 'DefaultController@healthz');
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DefaultController;
+use App\Http\Controllers\NpmController;
 
-$router->group(['middleware' => ['cors']], function() use ($router) {
-    // Set the CORS options that we will allow web requests from (This doesn't affect composer/console clients)
-    $router->options('{path:.*}', 'DefaultController@cors');
+Route::get('/', [DefaultController::class, 'healthz']);
+Route::options('/{path}', [DefaultController::class, 'cors'])->where('path', '.*');
 
-    // Pass all requests through the auth layer
-    $router->group(['middleware' => 'auth:repo'], function() use ($router) {
-
+Route::middleware(['cors'])->group(function () {
+    Route::middleware(['auth:repo'])->group(function () {
+        Route::get('/-/all', [NpmController::class, 'listAll']);
+        Route::get('/{package}', [NpmController::class, 'getPackage'])->where('package', '.+');
     });
 
-    $router->group(['middleware' => 'auth:token'], function() use ($router) {
-
+    Route::middleware(['auth:token'])->group(function () {
+        Route::put('/{package}', [NpmController::class, 'publish'])->where('package', '.+');
     });
 });

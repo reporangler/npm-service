@@ -6,3 +6,6 @@ xdebug.log
 auth.json
 storage/
 composer.phar
+storage/framework/
+storage/logs/
+bootstrap/cache/

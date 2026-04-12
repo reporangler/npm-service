@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Laravel\Lumen\Routing\Controller as BaseController;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\JsonResponse;
 
 class DefaultController extends BaseController
@@ -14,6 +14,6 @@ class DefaultController extends BaseController
 
     public function cors()
     {
-        $this->healthz();
+        return $this->healthz();
     }
 }

@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine3.18
+FROM php:8.2-fpm-alpine3.18
 
 RUN apk add --no-cache git unzip icu-dev libzip-dev \
     && docker-php-ext-install -j$(nproc) \
