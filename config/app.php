@@ -44,4 +44,5 @@ return [
     'auth_base_url'     => env('APP_AUTH_URL',  "{$required['APP_PROTOCOL']}://auth.{$required['APP_DOMAIN']}"),
     'metadata_base_url' => env('APP_METADATA_URL',  "{$required['APP_PROTOCOL']}://metadata.{$required['APP_DOMAIN']}"),
     'storage_base_url'  => env('APP_STORAGE_URL', "{$required['APP_PROTOCOL']}://storage.{$required['APP_DOMAIN']}"),
+    'storage_public_url' => env('APP_STORAGE_PUBLIC_URL', env('APP_STORAGE_URL', "{$required['APP_PROTOCOL']}://storage.{$required['APP_DOMAIN']}")),
 ];
