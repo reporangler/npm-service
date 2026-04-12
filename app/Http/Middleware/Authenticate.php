@@ -4,47 +4,61 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Contracts\Auth\Factory as Auth;
-use Illuminate\Http\Request;
+use RepoRangler\Entity\PublicUser;
+use RepoRangler\Entity\User;
+use RepoRangler\Services\AuthClient;
 
 class Authenticate
 {
-    /**
-     * The authentication guard factory instance.
-     *
-     * @var \Illuminate\Contracts\Auth\Factory
-     */
-    protected $auth;
-
-    /**
-     * Create a new middleware instance.
-     *
-     * @param  \Illuminate\Contracts\Auth\Factory  $auth
-     * @return void
-     */
-    public function __construct(Auth $auth)
+    public function handle($request, Closure $next, ...$guards)
     {
-        $this->auth = $auth;
-    }
+        $guard = $guards[0] ?? 'token';
 
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
-     * @return mixed
-     *
-     * @throws \Illuminate\Auth\AuthenticationException
-     */
-    public function handle(Request $request, Closure $next, $guard = null)
-    {
-        if (!$this->auth->guard($guard)->user()) {
-            throw new AuthenticationException(
-                'No user could be created, not even a public user'
-            );
+        if ($guard === 'token' || $guard === 'custom-token') {
+            $authHeader = $request->header('Authorization');
+
+            if (empty($authHeader)) {
+                throw new AuthenticationException('Unauthenticated.');
+            }
+
+            try {
+                $authClient = app(AuthClient::class);
+                $response = $authClient->check($authHeader);
+                $user = new User($response);
+
+                $request->setUserResolver(function () use ($user) {
+                    return $user;
+                });
+
+                return $next($request);
+            } catch (\Throwable $e) {
+                throw new AuthenticationException('Unauthenticated.');
+            }
         }
 
-        return $next($request);
+        if ($guard === 'repo' || $guard === 'custom-repo') {
+            // Try to authenticate, fall back to public user
+            $authHeader = $request->header('Authorization');
+
+            if (empty($authHeader)) {
+                $user = new PublicUser();
+            } else {
+                try {
+                    $authClient = app(AuthClient::class);
+                    $response = $authClient->check($authHeader);
+                    $user = new User($response);
+                } catch (\Throwable $e) {
+                    $user = new PublicUser();
+                }
+            }
+
+            $request->setUserResolver(function () use ($user) {
+                return $user;
+            });
+
+            return $next($request);
+        }
+
+        throw new AuthenticationException('Unauthenticated.');
     }
 }

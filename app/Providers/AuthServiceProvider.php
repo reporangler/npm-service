@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Auth::viaRequest('repo', function (Request $request) {
+        Auth::viaRequest('custom-repo', function (Request $request) {
             $authClient = app(AuthClient::class);
             $authHeader = $request->header('Authorization');
 
